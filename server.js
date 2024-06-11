@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const connectDb = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const restaurantRoutes = require('./routes/restaurantRoutes');
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(morgan('dev'));
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/restaurant', restaurantRoutes);
 
 app.get('/', (req, res) => {
     return res.status(200).send('<h1>Welcome to Food Server </h1>');
