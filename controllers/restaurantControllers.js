@@ -114,4 +114,38 @@ const getRestaurantByIdController = async (req, res) => {
     }
 };
 
-module.exports = { createRestaurantControllers, getAllRestaurantController, getRestaurantByIdController };
+const deleteRestaurantController = async (req, res) => {
+    try {
+        const restaurantId = req.params.id;
+
+        if (!restaurantId) {
+            return res.status(404).send({
+                success: false,
+                message: 'Please provide restaurant id'
+            });
+        }
+
+        const restaurant = await restaurantModel.findById(restaurantId);
+        if (!restaurant) {
+            return res.status(404).send({
+                success: false,
+                message: 'Restaurant not found'
+            });
+        }
+
+        await restaurantModel.findByIdAndDelete(restaurantId);
+        res.status(200).send({
+            success: true,
+            message: 'Restaurant deleted successfully!'
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: 'Error in delete restaurant',
+            error
+        });
+    }
+};
+
+module.exports = { createRestaurantControllers, getAllRestaurantController, getRestaurantByIdController, deleteRestaurantController };
