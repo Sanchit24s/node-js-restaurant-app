@@ -282,7 +282,34 @@ const placeOrderController = async (req, res) => {
     }
 };
 
+const orderStatusController = async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        if (!orderId) {
+            return res.status(500).send({
+                success: false,
+                message: 'Please provide order ID'
+            });
+        }
+        const { status } = req.body;
+        const order = await orderModel.findByIdAndUpdate(orderId, { status }, { new: true });
+
+        res.status(200).send({
+            success: true,
+            message: 'Order Status Updated'
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: 'Error in order status',
+            error
+        });
+    }
+};
+
 module.exports = {
     createFoodController, getAllFoodController, getSingleFoodController,
-    getFoodByRestaurantController, updateFoodController, deleteFoodController, placeOrderController
+    getFoodByRestaurantController, updateFoodController, deleteFoodController,
+    placeOrderController, orderStatusController
 };
