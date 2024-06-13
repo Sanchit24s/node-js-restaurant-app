@@ -141,10 +141,109 @@ const getFoodByRestaurantController = async (req, res) => {
         console.log(error);
         res.status(500).send({
             success: false,
-            message: 'Error in get single food',
+            message: 'Error in get food by restaurant',
             error
         });
     }
 };
 
-module.exports = { createFoodController, getAllFoodController, getSingleFoodController, getFoodByRestaurantController };
+const updateFoodController = async (req, res) => {
+    try {
+        const foodId = req.params.id;
+        if (!foodId) {
+            return res.status(500).send({
+                success: false,
+                message: 'Please Provide ID'
+            });
+        }
+
+        const food = await foodModel.findById(foodId);
+        if (!food) {
+            return res.status(404).send({
+                success: false,
+                message: 'Food not found'
+            });
+        }
+
+        const {
+            title,
+            description,
+            price,
+            imageUrl,
+            foodTags,
+            category,
+            code,
+            isAvailable,
+            restaurant,
+            rating,
+        } = req.body;
+
+        const updateFood = await foodModel.findByIdAndUpdate(
+            foodId,
+            {
+                title,
+                description,
+                price,
+                imageUrl,
+                foodTags,
+                category,
+                code,
+                isAvailable,
+                restaurant,
+                rating,
+            },
+            { new: true }
+        );
+
+        res.status(200).send({
+            success: true,
+            message: 'Food Updated Successfully!'
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: 'Error in update food',
+            error
+        });
+    }
+};
+
+const deleteFoodController = async (req, res) => {
+    try {
+        const foodId = req.params.id;
+        if (!foodId) {
+            return res.status(500).send({
+                success: false,
+                message: 'Please Provide ID'
+            });
+        }
+
+        const food = await foodModel.findById(foodId);
+        if (!food) {
+            return res.status(404).send({
+                success: false,
+                message: 'Food not found'
+            });
+        }
+
+        await foodModel.findByIdAndDelete(foodId);
+        res.status(200).send({
+            success: true,
+            message: 'Food deleted successfully!'
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            success: false,
+            message: 'Error in delete food',
+            error
+        });
+    }
+};
+
+module.exports = {
+    createFoodController, getAllFoodController, getSingleFoodController,
+    getFoodByRestaurantController, updateFoodController, deleteFoodController
+};
